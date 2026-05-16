@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generador de Enlaces Monetizados</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #0f172a; margin: 0; color: #f8fafc; }
+        .card { background: #1e293b; padding: 2.5rem; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); width: 100%; max-width: 420px; box-sizing: border-box; }
+        h2 { margin-top: 0; color: #38bdf8; text-align: center; font-size: 24px; }
+        label { display: block; margin-top: 15px; font-size: 14px; color: #94a3b8; }
+        input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #334155; border-radius: 6px; background: #0f172a; color: white; box-sizing: border-box; font-size: 15px; }
+        input:focus { outline: none; border-color: #38bdf8; }
+        button { width: 100%; padding: 12px; background: #0284c7; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 20px; transition: background 0.2s; }
+        button:hover { background: #0369a1; }
+        #resultado { margin-top: 25px; padding: 15px; background: #0f172a; border-radius: 6px; border-left: 4px solid #38bdf8; display: none; word-break: break-all; }
+        #resultado a { color: #38bdf8; text-decoration: none; font-weight: bold; }
+        #resultado a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Generador de Entradas</h2>
+        
+        <label for="video">Enlace del Video</label>
+        <input type="text" id="video" placeholder="Ej: https://stream... o youtube.com/...">
+        
+        <label for="monetag">Enlace de Monetag (SmartLink)</label>
+        <input type="text" id="monetag" placeholder="Ej: https://monetag.com/...">
+        
+        <button onclick="generarEntrada()">Generar Entrada</button>
+        
+        <div id="resultado">
+            <span style="color: #94a3b8; font-size: 13px;">Tu enlace generado:</span><br>
+            <div style="margin-top: 5px;"><a id="linkGenerado" href="#" target="_blank"></a></div>
+        </div>
+    </div>
+
+    <script>
+        async function generarEntrada() {
+            const video = document.getElementById('video').value.trim();
+            const monetag = document.getElementById('monetag').value.trim();
+            
+            if(!video || !monetag) {
+                alert("Por favor, rellena ambas casillas.");
+                return;
+            }
+            
+            const response = await fetch('/generar', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ video, monetag })
+            });
+            
+            const data = await response.json();
+            
+            const boxResultado = document.getElementById('resultado');
+            const linkA = document.getElementById('linkGenerado');
+            
+            linkA.href = data.link;
+            linkA.innerText = data.link;
+            boxResultado.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
